@@ -55,7 +55,7 @@ public class JournalEntryController {
         String username = authentication.getName();
         User user = userService.findByUsername(username);
         List<JournalEntry> collect = user.getJournalEntries().stream().filter(x -> x.equals(ID)).toList();
-        Optional<JournalEntry> journalEntry = null;
+        Optional<JournalEntry> journalEntry = journalEntryService.getbyID(ID);
         if (!collect.isEmpty()) {
             journalEntry = journalEntryService.getbyID(ID);
             if (journalEntry.isPresent()) {
@@ -77,14 +77,21 @@ public class JournalEntryController {
     public ResponseEntity<?> updateJournalEntryID(@PathVariable ObjectId ID,@RequestBody JournalEntry newEntry) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-        JournalEntry old = journalEntryService.getbyID(ID).orElse(null);
-        if(old != null){
-            old.setTitle(newEntry.getTitle()!=null && newEntry.getTitle().isEmpty()? newEntry.getTitle() : old.getTitle());
-            old.setContent(newEntry.getContent()!=null && newEntry.getContent().isEmpty() ? newEntry.getTitle(): old.getContent());
-            journalEntryService.saveEntry(old);
+        User user = userService.findByUsername(username);
+        List<JournalEntry> collect = user.getJournalEntries().stream().filter(x -> x.equals(ID)).toList();
+        if (!collect.isEmpty()) {
+            Optional<JournalEntry> journalEntry = journalEntryService.getbyID(ID);
 
-        return new ResponseEntity(old,HttpStatus.OK);
+            if (journalEntry.isPresent()) {
+                    JournalEntry old = journalEntry.get();
+                    old.setTitle(newEntry.getTitle()!=null && newEntry.getTitle().isEmpty()? newEntry.getTitle() : old.getTitle());
+                    old.setContent(newEntry.getContent()!=null && newEntry.getContent().isEmpty() ? newEntry.getTitle(): old.getContent());
+                    journalEntryService.saveEntry(old);
+                return new ResponseEntity<>(old,HttpStatus.OK);
+            }
         }
-        return new ResponseEntity(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-}
+
+    }
+
