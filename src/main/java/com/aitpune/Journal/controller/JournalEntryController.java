@@ -73,10 +73,10 @@ public class JournalEntryController {
         return null;
     }
 
-    @PutMapping("id/{username}/{ID}")
-    public ResponseEntity<?> updateJournalEntryID(@PathVariable ObjectId ID,
-                                             @RequestBody JournalEntry newEntry,
-                                             @PathVariable String username) {
+    @PutMapping("id/{ID}")
+    public ResponseEntity<?> updateJournalEntryID(@PathVariable ObjectId ID,@RequestBody JournalEntry newEntry) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
         JournalEntry old = journalEntryService.getbyID(ID).orElse(null);
         if(old != null){
             old.setTitle(newEntry.getTitle()!=null && newEntry.getTitle().isEmpty()? newEntry.getTitle() : old.getTitle());
