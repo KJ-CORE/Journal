@@ -19,16 +19,7 @@ public class JournalApplication {
 
         SpringApplication.run(JournalApplication.class, args);
 	}
-    @Bean
-    public CommandLineRunner checkConfig(
-            @Value("${spring.data.mongodb.uri:NOT_FOUND}") String mongoUri
-    ) {
-        return args -> {
-            System.out.println("=================================");
-            System.out.println("MongoDB URI: " + mongoUri);
-            System.out.println("=================================");
-        };
-    }
+
     @Bean
     public PlatformTransactionManager add(MongoDatabaseFactory dbFactory){
         return new MongoTransactionManager(dbFactory);
