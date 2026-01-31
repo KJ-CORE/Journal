@@ -2,6 +2,7 @@ package com.aitpune.Journal.service;
 
 import com.aitpune.Journal.entity.User;
 import com.aitpune.Journal.repository.UserRepository;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,7 +16,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    @Override
+    public UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
         User user = userRepository.findByusername(username);
         if(user != null){
             UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
@@ -28,4 +30,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         throw new UsernameNotFoundException("Username not found :" + username);
 
     }
+
+
 }
