@@ -1,6 +1,6 @@
 spring:
   mongodb:
-    uri:
+    uri: mongodb+srv://kunaljha5002:12345@cluster0.ybaptf4.mongodb.net/journaldb?retryWrites=true&w=majority
 
 logging:
   level:

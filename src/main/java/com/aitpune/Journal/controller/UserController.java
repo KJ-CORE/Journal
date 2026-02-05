@@ -1,8 +1,10 @@
 package com.aitpune.Journal.controller;
 
+import com.aitpune.Journal.api.response.WeatherResponse;
 import com.aitpune.Journal.entity.User;
 import com.aitpune.Journal.repository.UserRepository;
 import com.aitpune.Journal.service.UserService;
+import com.aitpune.Journal.service.weatherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private weatherService weatherService;
 
 
     @PutMapping()
@@ -38,6 +42,16 @@ public class UserController {
         userRepository.deleteByusername(authentication.getName());
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    @GetMapping
+    public ResponseEntity<?> greetings(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        WeatherResponse weatherResponse = weatherService.getWeather("Mumbai");
+        String greetings = "";
+        if(weatherResponse != null){
+            greetings = "weather feels like" + weatherResponse.getCurrent().getTemperature();
+        }
+        return new ResponseEntity<>("Hi" + authentication.getName()+greetings,HttpStatus.OK);
     }
 
 }
